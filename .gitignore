@@ -1,0 +1,12 @@
+*/node_modules
+*/.env
+backend/.flaskenv
+backend/__pycache__
+backend/venv
+backend/venv/
+backend/venv/Scripts/
+backend/venv/Scripts/activate
+backend/venv/Scripts/deactivate
+backend/venv/Scripts/pip
+backend/venv/Scripts/pip.exe
+backend/venv/Scripts/pip.exe.exe
