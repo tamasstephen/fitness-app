@@ -2,7 +2,8 @@
 import * as fs from "node:fs";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 
 const filePath = "count.txt";
 
@@ -33,14 +34,34 @@ export const Route = createFileRoute("/")({
 function Home() {
   const router = useRouter();
   const state = Route.useLoaderData();
+  const socket = io("http://localhost:5001/video");
+  const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/data").then((res) => {
-      res.json().then((data) => {
-        console.log("data", data);
-      });
+    socket.on("connect", () => {
+      console.log("connected");
+      setConnected(true);
     });
+
+    socket.on("disconnect", () => {
+      console.log("disconnected");
+    });
+
+    socket.on("message", (data) => {
+      console.log("message", data);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
   }, []);
+
+  useEffect(() => {
+    if (connected) {
+      console.log("joining room");
+      socket.emit("join_user_room", { room_id: "123" });
+    }
+  }, [connected]);
 
   return (
     <button
