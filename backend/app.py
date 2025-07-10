@@ -16,6 +16,7 @@ print(allowed_origins)
 
 def create_app():
     app = Flask(__name__)
+    app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
     # Enable CORS for all origins, allowing your React app to access the API.
     # In a production environment, you should restrict this to your frontend's domain.
     CORS(app)
