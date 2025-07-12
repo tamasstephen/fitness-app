@@ -1,7 +1,29 @@
+# General
 **/.env
+
+# Backend
 **/.flaskenv
 **/.venv
 backend/__pycache__
 backend/venv
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+**/__pycache__
+**/_pycache_
+**/_pycache
+**/_pycache_
+.DS_Store
+.vscode
+.idea
+.pytest_cache
+.ruff_cache
+.mypy_cache
+.coverage
+
+
+# Frontend
 frontend/node_modules
 frontend/dist
