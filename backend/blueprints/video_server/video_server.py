@@ -1,3 +1,4 @@
+from decorators.decorators import require_auth
 from flask import Blueprint, jsonify, request
 from flask_socketio import emit, join_room, leave_room
 
@@ -11,6 +12,7 @@ video_bp = Blueprint('video', __name__, url_prefix='/video')
 # --- Socket.IO Event Handlers for Users ---
 # You can define a function to register events with the global socketio instance
 def register_user_socket_events():
+    @require_auth
     @socketio.on('join_user_room', namespace='/video')
     def handle_join_user_room(data):
         room_id = data.get('room_id')
@@ -19,16 +21,6 @@ def register_user_socket_events():
         print(f"User {request.sid} joined room {room} for room_id {room_id}")
         emit('status_update', {'message': f'You joined room {room_id}'}, room=request.sid)
         emit('room_activity', {'room_id': room_id, 'activity': 'joined'}, room=room, include_self=False)
-
-    @socketio.on('update_user_profile', namespace='/video')
-    def handle_update_user_profile(data):
-        user_id = data.get('user_id')
-        new_name = data.get('name')
-        print(f"Received update for user {user_id}: {new_name}")
-        # In a real app, update DB
-        # Then broadcast to all clients in that user's room
-        room = f'user_{user_id}'
-        emit('user_profile_updated', {'user_id': user_id, 'name': new_name}, room=room)
 
     @socketio.on('disconnect', namespace='/video')
     def handle_disconnect_user_socket():
