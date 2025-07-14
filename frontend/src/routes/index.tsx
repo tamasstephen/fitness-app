@@ -34,45 +34,10 @@ export const Route = createFileRoute("/")({
 function Home() {
   const router = useRouter();
   const state = Route.useLoaderData();
-  const socket = io("http://localhost:5001/video");
-  const [connected, setConnected] = useState(false);
-
-  useEffect(() => {
-    socket.on("connect", () => {
-      console.log("connected");
-      setConnected(true);
-    });
-
-    socket.on("disconnect", () => {
-      console.log("disconnected");
-    });
-
-    socket.on("message", (data) => {
-      console.log("message", data);
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (connected) {
-      console.log("joining room");
-      socket.emit("join_user_room", { room_id: "123" });
-    }
-  }, [connected]);
 
   return (
-    <button
-      type="button"
-      onClick={() => {
-        updateCount({ data: 1 }).then(() => {
-          router.invalidate();
-        });
-      }}
-    >
-      Add 1 to {state}?
-    </button>
+    <div>
+      <h1>Hello World</h1>
+    </div>
   );
 }

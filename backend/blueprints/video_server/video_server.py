@@ -4,15 +4,14 @@ from flask_socketio import emit, join_room, leave_room
 
 # Import the global socketio instance
 # This assumes `socketio` is defined and then initialized in `app.py`
-from app import socketio # Important: This import needs careful handling, see note below
+# from app import socketio # Important: This import needs careful handling, see note below
 
 video_bp = Blueprint('video', __name__, url_prefix='/video')
 
 
 # --- Socket.IO Event Handlers for Users ---
 # You can define a function to register events with the global socketio instance
-def register_user_socket_events():
-    @require_auth
+def register_user_socket_events(socketio):
     @socketio.on('join_user_room', namespace='/video')
     def handle_join_user_room(data):
         room_id = data.get('room_id')

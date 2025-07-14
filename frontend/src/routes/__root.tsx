@@ -1,5 +1,7 @@
 // src/routes/__root.tsx
 /// <reference types="vite/client" />
+
+import "@/style.scss";
 import type { ReactNode } from "react";
 import {
   Outlet,
@@ -7,6 +9,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { AppWrapper, Sidebar } from "@/components";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -40,8 +43,11 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <head>
         <HeadContent />
       </head>
-      <body>
-        {children}
+      <body style={{ margin: 0 }}>
+        <AppWrapper>
+          <Sidebar />
+          {children}
+        </AppWrapper>
         <Scripts />
       </body>
     </html>

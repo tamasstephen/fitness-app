@@ -57,7 +57,7 @@ def create_app():
     app.register_blueprint(video_bp)
     
     # Register socket events from the video blueprint
-    register_user_socket_events()
+    register_user_socket_events(socketio)
 
     @app.route('/')
     def home():

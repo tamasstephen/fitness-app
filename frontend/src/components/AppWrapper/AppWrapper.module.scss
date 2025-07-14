@@ -1,0 +1,9 @@
+.app-wrapper {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: "sidebar main";
+  height: 100vh;
+  width: 100vw;
+}
