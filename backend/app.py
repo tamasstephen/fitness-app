@@ -1,16 +1,17 @@
+
+import os
 from flask import Flask, jsonify, redirect, session
 from flask_cors import CORS
-import os
 from dotenv import load_dotenv
 from flask_socketio import SocketIO
 from authlib.integrations.flask_client import OAuth
 
 socketio = SocketIO()
 
-# Import the video blueprint and register its socket events
-# NOTE: This is a workaround to avoid circular imports
-from blueprints.video_server.video_server import video_bp
-from blueprints.video_server.video_server import register_user_socket_events
+from blueprints.video_server.video_server import (
+    video_bp,
+    register_user_socket_events
+)
 from decorators.decorators import require_auth
 
 # Load environment variables from a .env file (useful during local development)
@@ -19,19 +20,17 @@ load_dotenv()
 allowed_origins = os.getenv("ALLOWED_DEVELOPMENT_ORIGIN") if os.getenv("FLASK_ENV") == "development" else os.getenv("CORS_ALLOWED_ORIGINS")
 
 
-print(allowed_origins)
-
 def create_app():
     secret_key = os.getenv("SECRET_KEY")
 
     if not secret_key:
         raise ValueError("SECRET_KEY is not set")
-    
     app = Flask(__name__)
     app.config['SECRET_KEY'] = secret_key
     app.config['SESSION_COOKIE_HTTPONLY'] = True
     app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # or 'None' for cross-domain
-    app.config['SESSION_COOKIE_DOMAIN'] = None 
+    app.config['SESSION_COOKIE_DOMAIN'] = None
+
     # Enable CORS for all origins, allowing your React app to access the API.
     # In a production environment, you should restrict this to your frontend's domain.
     CORS(app)
@@ -60,7 +59,7 @@ def create_app():
 
     socketio.init_app(app, cors_allowed_origins=allowed_origins)
     app.register_blueprint(video_bp)
-    
+
     # Register socket events from the video blueprint
     register_user_socket_events(socketio)
 
@@ -79,11 +78,11 @@ def create_app():
             "timestamp": os.getenv("FLASK_RUN_HOST", "localhost") + ":" + os.getenv("FLASK_RUN_PORT", "5000")
         }
         return jsonify(data)
-    
+
     @app.route('/login')
     def login():
         return oauth.oidc.authorize_redirect(authorize_redirect_url)
-    
+
     @app.route('/authorize')
     def authorize():
         try:
@@ -95,12 +94,11 @@ def create_app():
             print(f"Error: {e}")
 
         return redirect(frontend_url)
-    
+
     @app.route('/logout')
     def logout():
         session.pop('user', None)
-        
-        # Instead of making a server-side request, redirect the browser to Cognito's logout endpoint
+
         cognito_domain = os.getenv("COGNITO_DOMAIN")
         cognito_logout_url = f'{cognito_domain}/logout'
 
@@ -108,14 +106,14 @@ def create_app():
             'client_id': client_id,
             'logout_uri': logout_uri_path,
         }
-        
+
         # Build the logout URL with proper parameters
         import urllib.parse
         query_string = urllib.parse.urlencode(logout_params)
         full_logout_url = f"{cognito_logout_url}?{query_string}"
-        
+
         print("Redirecting to Cognito logout:", full_logout_url)
-        
+
         # Redirect the browser to Cognito's logout endpoint
         return redirect(full_logout_url)
 
@@ -126,10 +124,10 @@ def create_app():
     @socketio.on("disconnect")
     def handle_disconnect():
         print("Client disconnected")
-    
     return app
 
 
 if __name__ == "__main__":
     app = create_app()
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, host="0.0.0.0", port=5001)
+
