@@ -23,7 +23,7 @@ def register_user_socket_events(socketio):
 
     @socketio.on('disconnect', namespace='/video')
     def handle_disconnect_user_socket():
-        print(f"Client {request.sid} disconnected from /users namespace.")
+        print(f"Client {request.sid} disconnected from /video namespace.")
 
 # NOTE ON CIRCULAR IMPORTS:
 # Importing `socketio` from `app` directly can lead to circular import issues

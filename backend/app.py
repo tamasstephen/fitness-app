@@ -22,8 +22,13 @@ allowed_origins = os.getenv("ALLOWED_DEVELOPMENT_ORIGIN") if os.getenv("FLASK_EN
 print(allowed_origins)
 
 def create_app():
+    secret_key = os.getenv("SECRET_KEY")
+
+    if not secret_key:
+        raise ValueError("SECRET_KEY is not set")
+    
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+    app.config['SECRET_KEY'] = secret_key
     app.config['SESSION_COOKIE_HTTPONLY'] = True
     app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # or 'None' for cross-domain
     app.config['SESSION_COOKIE_DOMAIN'] = None 
@@ -77,19 +82,15 @@ def create_app():
     
     @app.route('/login')
     def login():
-        print("login", session)
         return oauth.oidc.authorize_redirect(authorize_redirect_url)
     
     @app.route('/authorize')
     def authorize():
         try:
-            print("authorize")
             token = oauth.oidc.authorize_access_token()
-            print("token", token)
             user = token['userinfo']
-            print("user", user)
             session['user'] = user
-            return redirect(frontend_url)
+            return redirect(frontend_url + "/auth/success")
         except Exception as e:
             print(f"Error: {e}")
 
@@ -97,10 +98,7 @@ def create_app():
     
     @app.route('/logout')
     def logout():
-        print("session", session)
         session.pop('user', None)
-        print("logged out")
-        print("session", session)
         
         # Instead of making a server-side request, redirect the browser to Cognito's logout endpoint
         cognito_domain = os.getenv("COGNITO_DOMAIN")

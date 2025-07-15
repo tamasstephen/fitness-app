@@ -11,7 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthLoginSuccessRouteImport } from './routes/auth/login/success'
+import { Route as AuthSuccessRouteImport } from './routes/auth/success'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
@@ -23,40 +23,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthLoginSuccessRoute = AuthLoginSuccessRouteImport.update({
-  id: '/auth/login/success',
-  path: '/auth/login/success',
+const AuthSuccessRoute = AuthSuccessRouteImport.update({
+  id: '/auth/success',
+  path: '/auth/success',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/auth/login/success': typeof AuthLoginSuccessRoute
+  '/auth/success': typeof AuthSuccessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/auth/login/success': typeof AuthLoginSuccessRoute
+  '/auth/success': typeof AuthSuccessRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/auth/login/success': typeof AuthLoginSuccessRoute
+  '/auth/success': typeof AuthSuccessRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/auth/login/success'
+  fullPaths: '/' | '/dashboard' | '/auth/success'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/auth/login/success'
-  id: '__root__' | '/' | '/dashboard' | '/auth/login/success'
+  to: '/' | '/dashboard' | '/auth/success'
+  id: '__root__' | '/' | '/dashboard' | '/auth/success'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
-  AuthLoginSuccessRoute: typeof AuthLoginSuccessRoute
+  AuthSuccessRoute: typeof AuthSuccessRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,11 +75,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth/login/success': {
-      id: '/auth/login/success'
-      path: '/auth/login/success'
-      fullPath: '/auth/login/success'
-      preLoaderRoute: typeof AuthLoginSuccessRouteImport
+    '/auth/success': {
+      id: '/auth/success'
+      path: '/auth/success'
+      fullPath: '/auth/success'
+      preLoaderRoute: typeof AuthSuccessRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -88,7 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
-  AuthLoginSuccessRoute: AuthLoginSuccessRoute,
+  AuthSuccessRoute: AuthSuccessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

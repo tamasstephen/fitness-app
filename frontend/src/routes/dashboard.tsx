@@ -11,7 +11,7 @@ function RouteComponent() {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    const initSocket = io("http://localhost:5001/video");
+    const initSocket = io(import.meta.env.VITE_BACKEND_URL);
     setSocket(initSocket);
   }, []);
 
