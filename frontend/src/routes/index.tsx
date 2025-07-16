@@ -2,7 +2,8 @@
 import * as fs from "node:fs";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 
 const filePath = "count.txt";
 
@@ -34,24 +35,9 @@ function Home() {
   const router = useRouter();
   const state = Route.useLoaderData();
 
-  useEffect(() => {
-    fetch("http://localhost:5001/api/data").then((res) => {
-      res.json().then((data) => {
-        console.log("data", data);
-      });
-    });
-  }, []);
-
   return (
-    <button
-      type="button"
-      onClick={() => {
-        updateCount({ data: 1 }).then(() => {
-          router.invalidate();
-        });
-      }}
-    >
-      Add 1 to {state}?
-    </button>
+    <div>
+      <h1>Hello World</h1>
+    </div>
   );
 }

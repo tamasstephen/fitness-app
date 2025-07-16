@@ -1,12 +1,29 @@
-*/node_modules
-*/.env
-backend/.flaskenv
+# General
+**/.env
+
+# Backend
+**/.flaskenv
+**/.venv
 backend/__pycache__
 backend/venv
-backend/venv/
-backend/venv/Scripts/
-backend/venv/Scripts/activate
-backend/venv/Scripts/deactivate
-backend/venv/Scripts/pip
-backend/venv/Scripts/pip.exe
-backend/venv/Scripts/pip.exe.exe
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+**/__pycache__
+**/_pycache_
+**/_pycache
+**/_pycache_
+.DS_Store
+.vscode
+.idea
+.pytest_cache
+.ruff_cache
+.mypy_cache
+.coverage
+
+
+# Frontend
+frontend/node_modules
+frontend/dist
