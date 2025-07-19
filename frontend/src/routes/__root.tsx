@@ -5,7 +5,6 @@ import "@/style.scss";
 import type { ReactNode } from "react";
 import {
   Outlet,
-  createRootRoute,
   HeadContent,
   Scripts,
   createRootRouteWithContext,
@@ -13,9 +12,12 @@ import {
 import { AppWrapper, Sidebar } from "@/components";
 import {
   QueryClient,
-  QueryClientProvider,
-  useQueryClient,
+  useQuery,
+  UseQueryResult,
+  useSuspenseQuery,
 } from "@tanstack/react-query";
+import { authQueryOptions } from "@/api/queryOptions/authQueryOptions";
+import { AuthStatus } from "@/types/authStatus";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -38,17 +40,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 );
 
 function RootComponent() {
-  const queryClient = new QueryClient();
+  const authQuery = useQuery(authQueryOptions());
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <RootDocument>
-        <Outlet />
-      </RootDocument>
-    </QueryClientProvider>
+    <RootDocument authStatus={authQuery}>
+      <Outlet />
+    </RootDocument>
   );
 }
 
-function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+function RootDocument({
+  children,
+  authStatus,
+}: Readonly<{
+  children: ReactNode;
+  authStatus: UseQueryResult<AuthStatus, Error>;
+}>) {
   return (
     <html>
       <head>
@@ -56,7 +63,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       </head>
       <body style={{ margin: 0 }}>
         <AppWrapper>
-          <Sidebar />
+          <Sidebar authStatus={authStatus} />
           {children}
         </AppWrapper>
         <Scripts />

@@ -1,4 +1,8 @@
 import { menu } from "@/constants/menu";
+import styles from "./Sidebar.module.scss";
+import { Link } from "@tanstack/react-router";
+import { AuthStatus } from "@/types/authStatus";
+import { UseQueryResult } from "@tanstack/react-query";
 
 /*
 MENU ITEMS:
@@ -9,42 +13,32 @@ MENU ITEMS:
 - Logout
 */
 
-import styles from "./Sidebar.module.scss";
-import { Link } from "@tanstack/react-router";
-import { useAuth } from "@/hooks/useAuth";
-import { Spinner } from "../Spinner/Spinner";
-import { QueryWrapper } from "../QueryWrapper";
-import { AuthStatus } from "@/types/authStatus";
-
-export function Sidebar() {
-  const response = useAuth();
+export function Sidebar({
+  authStatus,
+}: {
+  authStatus: UseQueryResult<AuthStatus, Error>;
+}) {
+  const { data, isLoading, isError } = authStatus;
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-  const authLinks = (data: AuthStatus | undefined) => {
-    return data?.data.status === "authenticated" ? (
-      <a href={`${BACKEND_URL}/logout`}>Logout</a>
-    ) : (
-      <a href={`${BACKEND_URL}/login`}>Login</a>
-    );
+  const authLinks = () => {
+    if (data?.status === "authenticated") {
+      return <a href={`${BACKEND_URL}/logout`}>Logout</a>;
+    }
+    return <a href={`${BACKEND_URL}/login`}>Login</a>;
   };
 
   return (
     <div className={styles.sidebar}>
-      <QueryWrapper dataset={response}>
-        {(data) => {
-          return (
-            <>
-              {menu.map((item) => (
-                <p key={item.label}>
-                  <Link to={item.path as any}>{item.label}</Link>
-                </p>
-              ))}
-              <p>{authLinks(data)}</p>
-            </>
-          );
-        }}
-      </QueryWrapper>
+      <>
+        {menu.map((item) => (
+          <p key={item.label}>
+            <Link to={item.path as any}>{item.label}</Link>
+          </p>
+        ))}
+        <p>{authLinks()}</p>
+      </>
     </div>
   );
 }

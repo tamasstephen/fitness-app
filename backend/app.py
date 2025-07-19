@@ -1,6 +1,6 @@
 from blueprints.video_server.video_server import video_bp, register_user_socket_events
 import os
-from flask import Flask, redirect, session
+from flask import Flask, redirect, session, request
 from flask_cors import CORS
 from dotenv import load_dotenv
 from flask_socketio import SocketIO
@@ -75,6 +75,8 @@ def create_app():
 
     @app.route("/status")
     def get_status():
+        origin = request.headers.get("Origin")
+        print("origin", origin)
         """
         A simple API endpoint that returns the authentication status.
         """

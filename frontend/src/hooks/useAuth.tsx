@@ -1,13 +1,13 @@
-import { apiClient } from "@/utils/apiClient";
+import { apiClient } from "@/api/apiClient";
 import { useQuery } from "@tanstack/react-query";
 import { AuthStatus } from "@/types/authStatus";
 
 export const useAuth = () => {
   const getAuthStatus = async (): Promise<AuthStatus> => {
     try {
-      return await apiClient.get("/status");
+      return (await apiClient.get("/status")).data;
     } catch (e: unknown) {
-      return { data: { email: "", status: "unauthenticated" } } as AuthStatus;
+      return { email: "", status: "unauthenticated" } as AuthStatus;
     }
   };
 

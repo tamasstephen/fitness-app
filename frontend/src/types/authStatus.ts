@@ -1,6 +1,4 @@
 export type AuthStatus = {
-  data: {
-    email?: string;
-    status: "authenticated" | "unauthenticated";
-  };
+  email?: string;
+  status: "authenticated" | "unauthenticated";
 };
