@@ -10,12 +10,7 @@ import {
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { AppWrapper, Sidebar } from "@/components";
-import {
-  QueryClient,
-  useQuery,
-  UseQueryResult,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { QueryClient, useQuery, UseQueryResult } from "@tanstack/react-query";
 import { authQueryOptions } from "@/api/queryOptions/authQueryOptions";
 import { AuthStatus } from "@/types/authStatus";
 
@@ -57,7 +52,7 @@ function RootDocument({
   authStatus: UseQueryResult<AuthStatus, Error>;
 }>) {
   return (
-    <html>
+    <html lang="en">
       <head>
         <HeadContent />
       </head>
