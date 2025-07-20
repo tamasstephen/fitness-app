@@ -8,14 +8,19 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthSuccessRouteImport } from './routes/auth/success'
+import { createFileRoute } from '@tanstack/react-router'
 
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthAuthRouteImport } from './routes/auth/_auth'
+import { Route as AuthAuthSuccessRouteImport } from './routes/auth/_auth.success'
+import { Route as AuthAuthDashboardRouteImport } from './routes/auth/_auth.dashboard'
+
+const AuthRouteImport = createFileRoute('/auth')()
+
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -23,49 +28,67 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthSuccessRoute = AuthSuccessRouteImport.update({
-  id: '/auth/success',
-  path: '/auth/success',
-  getParentRoute: () => rootRouteImport,
+const AuthAuthRoute = AuthAuthRouteImport.update({
+  id: '/_auth',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthAuthSuccessRoute = AuthAuthSuccessRouteImport.update({
+  id: '/success',
+  path: '/success',
+  getParentRoute: () => AuthAuthRoute,
+} as any)
+const AuthAuthDashboardRoute = AuthAuthDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthAuthRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/auth/success': typeof AuthSuccessRoute
+  '/auth': typeof AuthAuthRouteWithChildren
+  '/auth/dashboard': typeof AuthAuthDashboardRoute
+  '/auth/success': typeof AuthAuthSuccessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/auth/success': typeof AuthSuccessRoute
+  '/auth': typeof AuthAuthRouteWithChildren
+  '/auth/dashboard': typeof AuthAuthDashboardRoute
+  '/auth/success': typeof AuthAuthSuccessRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/auth/success': typeof AuthSuccessRoute
+  '/auth': typeof AuthRouteWithChildren
+  '/auth/_auth': typeof AuthAuthRouteWithChildren
+  '/auth/_auth/dashboard': typeof AuthAuthDashboardRoute
+  '/auth/_auth/success': typeof AuthAuthSuccessRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/auth/success'
+  fullPaths: '/' | '/auth' | '/auth/dashboard' | '/auth/success'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/auth/success'
-  id: '__root__' | '/' | '/dashboard' | '/auth/success'
+  to: '/' | '/auth' | '/auth/dashboard' | '/auth/success'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/auth/_auth'
+    | '/auth/_auth/dashboard'
+    | '/auth/_auth/success'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardRoute: typeof DashboardRoute
-  AuthSuccessRoute: typeof AuthSuccessRoute
+  AuthRoute: typeof AuthRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -75,20 +98,57 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth/success': {
-      id: '/auth/success'
-      path: '/auth/success'
+    '/auth/_auth': {
+      id: '/auth/_auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthAuthRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/_auth/success': {
+      id: '/auth/_auth/success'
+      path: '/success'
       fullPath: '/auth/success'
-      preLoaderRoute: typeof AuthSuccessRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthAuthSuccessRouteImport
+      parentRoute: typeof AuthAuthRoute
+    }
+    '/auth/_auth/dashboard': {
+      id: '/auth/_auth/dashboard'
+      path: '/dashboard'
+      fullPath: '/auth/dashboard'
+      preLoaderRoute: typeof AuthAuthDashboardRouteImport
+      parentRoute: typeof AuthAuthRoute
     }
   }
 }
 
+interface AuthAuthRouteChildren {
+  AuthAuthDashboardRoute: typeof AuthAuthDashboardRoute
+  AuthAuthSuccessRoute: typeof AuthAuthSuccessRoute
+}
+
+const AuthAuthRouteChildren: AuthAuthRouteChildren = {
+  AuthAuthDashboardRoute: AuthAuthDashboardRoute,
+  AuthAuthSuccessRoute: AuthAuthSuccessRoute,
+}
+
+const AuthAuthRouteWithChildren = AuthAuthRoute._addFileChildren(
+  AuthAuthRouteChildren,
+)
+
+interface AuthRouteChildren {
+  AuthAuthRoute: typeof AuthAuthRouteWithChildren
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthAuthRoute: AuthAuthRouteWithChildren,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRoute: DashboardRoute,
-  AuthSuccessRoute: AuthSuccessRoute,
+  AuthRoute: AuthRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

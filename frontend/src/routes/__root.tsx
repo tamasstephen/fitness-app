@@ -9,10 +9,7 @@ import {
   Scripts,
   createRootRouteWithContext,
 } from "@tanstack/react-router";
-import { AppWrapper, Sidebar } from "@/components";
-import { QueryClient, useQuery, UseQueryResult } from "@tanstack/react-query";
-import { authQueryOptions } from "@/api/queryOptions/authQueryOptions";
-import { AuthStatus } from "@/types/authStatus";
+import { QueryClient } from "@tanstack/react-query";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -35,10 +32,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 );
 
 function RootComponent() {
-  const authQuery = useQuery(authQueryOptions());
-
   return (
-    <RootDocument authStatus={authQuery}>
+    <RootDocument>
       <Outlet />
     </RootDocument>
   );
@@ -46,10 +41,8 @@ function RootComponent() {
 
 function RootDocument({
   children,
-  authStatus,
 }: Readonly<{
   children: ReactNode;
-  authStatus: UseQueryResult<AuthStatus, Error>;
 }>) {
   return (
     <html lang="en">
@@ -57,10 +50,7 @@ function RootDocument({
         <HeadContent />
       </head>
       <body style={{ margin: 0 }}>
-        <AppWrapper>
-          <Sidebar authStatus={authStatus} />
-          {children}
-        </AppWrapper>
+        {children}
         <Scripts />
       </body>
     </html>
