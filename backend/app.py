@@ -5,6 +5,8 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 from flask_socketio import SocketIO
 from authlib.integrations.flask_client import OAuth
+from decorators.decorators import require_auth
+from mocks.mock_session import MOCK_TRAINING_SESSION
 
 socketio = SocketIO()
 
@@ -75,8 +77,6 @@ def create_app():
 
     @app.route("/status")
     def get_status():
-        origin = request.headers.get("Origin")
-        print("origin", origin)
         """
         A simple API endpoint that returns the authentication status.
         """
@@ -98,12 +98,18 @@ def create_app():
             token = oauth.oidc.authorize_access_token()
             user = token["userinfo"]
             session["user"] = user
-            print("user", user)
             return redirect(f"{frontend_url}/auth/success")
         except Exception as e:
             print(f"Error: {e}")
 
         return redirect(frontend_url)
+
+    @app.route("/training-session")
+    @require_auth
+    def get_training_session():
+        user = session.get("user")
+        print("training session user", user)
+        return MOCK_TRAINING_SESSION
 
     @app.route("/logout")
     def logout():
@@ -122,8 +128,6 @@ def create_app():
 
         query_string = urllib.parse.urlencode(logout_params)
         full_logout_url = f"{cognito_logout_url}?{query_string}"
-
-        print("Redirecting to Cognito logout:", full_logout_url)
 
         # Redirect the browser to Cognito's logout endpoint
         return redirect(full_logout_url)
