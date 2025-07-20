@@ -1,4 +1,7 @@
 import { menu } from "@/constants/menu";
+import styles from "./Sidebar.module.scss";
+import { Link } from "@tanstack/react-router";
+import { AuthStatus } from "@/types/authStatus";
 
 /*
 MENU ITEMS:
@@ -9,23 +12,30 @@ MENU ITEMS:
 - Logout
 */
 
-import styles from "./Sidebar.module.scss";
-import { Link } from "@tanstack/react-router";
+export function Sidebar({
+  authStatus,
+}: {
+  authStatus: AuthStatus | undefined;
+}) {
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-export function Sidebar() {
+  const authLinks = () => {
+    if (authStatus?.status === "authenticated") {
+      return <a href={`${BACKEND_URL}/logout`}>Logout</a>;
+    }
+    return <a href={`${BACKEND_URL}/login`}>Login</a>;
+  };
+
   return (
     <div className={styles.sidebar}>
-      {menu.map((item) => (
-        <p key={item.label}>
-          <Link to={item.path}>{item.label}</Link>
-        </p>
-      ))}
-      <p>
-        <a href="http://localhost:5001/login">Login</a>
-      </p>
-      <p>
-        <a href="http://localhost:5001/logout">Logout</a>
-      </p>
+      <>
+        {menu.map((item) => (
+          <p key={item.label}>
+            <Link to={item.path as string}>{item.label}</Link>
+          </p>
+        ))}
+        <p>{authLinks()}</p>
+      </>
     </div>
   );
 }

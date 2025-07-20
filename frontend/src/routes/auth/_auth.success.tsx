@@ -1,8 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { useEffect } from "react";
 
-export const Route = createFileRoute("/auth/success")({
+export const Route = createFileRoute("/auth/_auth/success")({
   component: RouteComponent,
 });
 

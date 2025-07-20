@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/auth/_auth/dashboard")({
   component: RouteComponent,
 });
 
@@ -42,5 +42,5 @@ function RouteComponent() {
     }
   }, [socket, connected]);
 
-  return <div>Hello "/dashboard"!</div>;
+  return <div>Hello &quot;/auth/dashboard&quot;!</div>;
 }

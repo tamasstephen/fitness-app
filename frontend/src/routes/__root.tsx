@@ -5,29 +5,31 @@ import "@/style.scss";
 import type { ReactNode } from "react";
 import {
   Outlet,
-  createRootRoute,
   HeadContent,
   Scripts,
+  createRootRouteWithContext,
 } from "@tanstack/react-router";
-import { AppWrapper, Sidebar } from "@/components";
+import { QueryClient } from "@tanstack/react-query";
 
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      {
-        charSet: "utf-8",
-      },
-      {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
-      },
-      {
-        title: "TanStack Start Starter",
-      },
-    ],
-  }),
-  component: RootComponent,
-});
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
+  {
+    head: () => ({
+      meta: [
+        {
+          charSet: "utf-8",
+        },
+        {
+          name: "viewport",
+          content: "width=device-width, initial-scale=1",
+        },
+        {
+          title: "TanStack Start Starter",
+        },
+      ],
+    }),
+    component: RootComponent,
+  }
+);
 
 function RootComponent() {
   return (
@@ -37,17 +39,18 @@ function RootComponent() {
   );
 }
 
-function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+function RootDocument({
+  children,
+}: Readonly<{
+  children: ReactNode;
+}>) {
   return (
-    <html>
+    <html lang="en">
       <head>
         <HeadContent />
       </head>
       <body style={{ margin: 0 }}>
-        <AppWrapper>
-          <Sidebar />
-          {children}
-        </AppWrapper>
+        {children}
         <Scripts />
       </body>
     </html>
