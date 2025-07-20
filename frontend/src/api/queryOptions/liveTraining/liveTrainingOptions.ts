@@ -3,9 +3,9 @@ import { apiClient } from "../../apiClient";
 import { liveTrainingKeys } from "./liveTrainingKeys";
 import { paths } from "@/api/constants/paths";
 
-const getLiveTrainingSessionBase = async (userId: string, path: string) => {
+const getLiveTrainingSessionBase = async (path: string) => {
   try {
-    const response = await apiClient.get(`${path}?userId=${userId}`);
+    const response = await apiClient.get(path);
     return response.data;
   } catch (error) {
     console.error("Error fetching live training sessions:", error);
@@ -14,13 +14,12 @@ const getLiveTrainingSessionBase = async (userId: string, path: string) => {
 };
 
 const getLiveTrainingSessions = async (userId: string) => {
-  return getLiveTrainingSessionBase(userId, paths.liveTraining.list);
+  return getLiveTrainingSessionBase(paths.liveTraining.list(userId));
 };
 
 const getLiveTrainingDetails = async (userId: string, trainingId: string) => {
   return getLiveTrainingSessionBase(
-    userId,
-    paths.liveTraining.details(trainingId)
+    paths.liveTraining.details(userId, trainingId)
   );
 };
 

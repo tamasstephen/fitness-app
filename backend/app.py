@@ -84,7 +84,11 @@ def create_app():
         print("session_user", session_user)
 
         if session_user:
-            return {"status": "authenticated", "email": session_user["email"]}
+            return {
+                "status": "authenticated",
+                "email": session_user["email"],
+                "user_id": session_user["sub"],
+            }
         else:
             return {"status": "unauthenticated"}, 401
 
@@ -104,12 +108,13 @@ def create_app():
 
         return redirect(frontend_url)
 
-    @app.route("/training-session")
+    @app.route("/users/<string:user_id>/training-sessions")
     @require_auth
-    def get_training_session():
+    def get_training_session(user_id):
         user = session.get("user")
         print("training session user", user)
-        return MOCK_TRAINING_SESSION
+        print("training session user_id", user_id)
+        return [MOCK_TRAINING_SESSION]
 
     @app.route("/logout")
     def logout():
