@@ -31,14 +31,14 @@ export function DefaultCatchBoundary({ error }: ErrorComponentProps) {
         </button>
         {isRoot ? (
           <Link
-            to="/dashboard"
+            to="/"
             className={`px-2 py-1 bg-gray-600 dark:bg-gray-700 rounded text-white uppercase font-extrabold`}
           >
             Home
           </Link>
         ) : (
           <Link
-            to="/dashboard"
+            to="/"
             className={``}
             onClick={(e) => {
               e.preventDefault();
