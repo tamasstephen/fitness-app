@@ -12,10 +12,6 @@ export const Route = createFileRoute("/auth/_auth")({
 function RouteComponent() {
   const response = useQuery(authQueryOptions());
 
-  if (response.isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <AppWrapper>
       <QueryWrapper dataset={response}>
