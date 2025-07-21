@@ -1,4 +1,4 @@
-import { Dataset } from "@/types/dataset";
+import { Dataset } from "@/interfaces/dataset";
 
 interface QueryProps<T> {
   dataset: Dataset<T>;

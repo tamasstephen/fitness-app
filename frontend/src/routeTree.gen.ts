@@ -14,6 +14,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthAuthRouteImport } from './routes/auth/_auth'
 import { Route as AuthAuthSuccessRouteImport } from './routes/auth/_auth.success'
+import { Route as AuthAuthOnlineSessionRouteImport } from './routes/auth/_auth.online-session'
 import { Route as AuthAuthDashboardRouteImport } from './routes/auth/_auth.dashboard'
 
 const AuthRouteImport = createFileRoute('/auth')()
@@ -37,6 +38,11 @@ const AuthAuthSuccessRoute = AuthAuthSuccessRouteImport.update({
   path: '/success',
   getParentRoute: () => AuthAuthRoute,
 } as any)
+const AuthAuthOnlineSessionRoute = AuthAuthOnlineSessionRouteImport.update({
+  id: '/online-session',
+  path: '/online-session',
+  getParentRoute: () => AuthAuthRoute,
+} as any)
 const AuthAuthDashboardRoute = AuthAuthDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -47,12 +53,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthAuthRouteWithChildren
   '/auth/dashboard': typeof AuthAuthDashboardRoute
+  '/auth/online-session': typeof AuthAuthOnlineSessionRoute
   '/auth/success': typeof AuthAuthSuccessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthAuthRouteWithChildren
   '/auth/dashboard': typeof AuthAuthDashboardRoute
+  '/auth/online-session': typeof AuthAuthOnlineSessionRoute
   '/auth/success': typeof AuthAuthSuccessRoute
 }
 export interface FileRoutesById {
@@ -61,19 +69,31 @@ export interface FileRoutesById {
   '/auth': typeof AuthRouteWithChildren
   '/auth/_auth': typeof AuthAuthRouteWithChildren
   '/auth/_auth/dashboard': typeof AuthAuthDashboardRoute
+  '/auth/_auth/online-session': typeof AuthAuthOnlineSessionRoute
   '/auth/_auth/success': typeof AuthAuthSuccessRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/auth/dashboard' | '/auth/success'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/auth/dashboard'
+    | '/auth/online-session'
+    | '/auth/success'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/auth/dashboard' | '/auth/success'
+  to:
+    | '/'
+    | '/auth'
+    | '/auth/dashboard'
+    | '/auth/online-session'
+    | '/auth/success'
   id:
     | '__root__'
     | '/'
     | '/auth'
     | '/auth/_auth'
     | '/auth/_auth/dashboard'
+    | '/auth/_auth/online-session'
     | '/auth/_auth/success'
   fileRoutesById: FileRoutesById
 }
@@ -112,6 +132,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAuthSuccessRouteImport
       parentRoute: typeof AuthAuthRoute
     }
+    '/auth/_auth/online-session': {
+      id: '/auth/_auth/online-session'
+      path: '/online-session'
+      fullPath: '/auth/online-session'
+      preLoaderRoute: typeof AuthAuthOnlineSessionRouteImport
+      parentRoute: typeof AuthAuthRoute
+    }
     '/auth/_auth/dashboard': {
       id: '/auth/_auth/dashboard'
       path: '/dashboard'
@@ -124,11 +151,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthAuthRouteChildren {
   AuthAuthDashboardRoute: typeof AuthAuthDashboardRoute
+  AuthAuthOnlineSessionRoute: typeof AuthAuthOnlineSessionRoute
   AuthAuthSuccessRoute: typeof AuthAuthSuccessRoute
 }
 
 const AuthAuthRouteChildren: AuthAuthRouteChildren = {
   AuthAuthDashboardRoute: AuthAuthDashboardRoute,
+  AuthAuthOnlineSessionRoute: AuthAuthOnlineSessionRoute,
   AuthAuthSuccessRoute: AuthAuthSuccessRoute,
 }
 

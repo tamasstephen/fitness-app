@@ -1,12 +1,11 @@
 from blueprints.video_server.video_server import video_bp, register_user_socket_events
+from blueprints.users.users import users_bp
 import os
-from flask import Flask, redirect, session, request
+from flask import Flask, redirect, session
 from flask_cors import CORS
 from dotenv import load_dotenv
 from flask_socketio import SocketIO
 from authlib.integrations.flask_client import OAuth
-from decorators.decorators import require_auth
-from mocks.mock_session import MOCK_TRAINING_SESSION
 
 socketio = SocketIO()
 
@@ -67,6 +66,7 @@ def create_app():
 
     socketio.init_app(app, cors_allowed_origins=allowed_origins)
     app.register_blueprint(video_bp)
+    app.register_blueprint(users_bp, url_prefix="/users")
 
     # Register socket events from the video blueprint
     register_user_socket_events(socketio)
@@ -107,14 +107,6 @@ def create_app():
             print(f"Error: {e}")
 
         return redirect(frontend_url)
-
-    @app.route("/users/<string:user_id>/training-sessions")
-    @require_auth
-    def get_training_session(user_id):
-        user = session.get("user")
-        print("training session user", user)
-        print("training session user_id", user_id)
-        return [MOCK_TRAINING_SESSION]
 
     @app.route("/logout")
     def logout():
