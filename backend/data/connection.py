@@ -8,7 +8,7 @@ user = os.getenv("POSTGRES_USER")
 
 
 def with_connection(func):
-    def wrapper(*args, **kwargs):
+    def connection_handler(*args, **kwargs):
         conn = psycopg2.connect(
             host=host, database=database, user=user, password=password
         )
@@ -24,4 +24,4 @@ def with_connection(func):
             cursor.close()
             conn.close()
 
-    return wrapper
+    return connection_handler
