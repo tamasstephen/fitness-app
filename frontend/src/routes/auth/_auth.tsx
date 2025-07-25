@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { Sidebar } from "@/components/Sidebar";
 import { QueryWrapper } from "@/components/QueryWrapper";
 import { AppWrapper } from "@/components";
@@ -13,6 +13,7 @@ export const Route = createFileRoute("/auth/_auth")({
 function RouteComponent() {
   const response = useAuth();
   const { setUser, clearUser } = useAuthStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (response.data?.user_id) {
@@ -23,19 +24,20 @@ function RouteComponent() {
   useEffect(() => {
     if (response.data?.status === "unauthenticated") {
       clearUser();
+      navigate({ to: "/" });
     }
-  }, [response.data?.status, clearUser]);
+  }, [response.data?.status, clearUser, navigate]);
 
   return (
-    <AppWrapper>
-      <QueryWrapper dataset={response}>
-        {(authStatus) => (
+    <QueryWrapper dataset={response}>
+      {(authStatus) => (
+        <AppWrapper>
           <>
             <Sidebar authStatus={authStatus} />
             <Outlet />
           </>
-        )}
-      </QueryWrapper>
-    </AppWrapper>
+        </AppWrapper>
+      )}
+    </QueryWrapper>
   );
 }

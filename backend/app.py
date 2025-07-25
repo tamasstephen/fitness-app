@@ -6,6 +6,7 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 from flask_socketio import SocketIO
 from authlib.integrations.flask_client import OAuth
+from services import create_user_if_does_not_exist
 
 socketio = SocketIO()
 
@@ -102,6 +103,7 @@ def create_app():
             token = oauth.oidc.authorize_access_token()
             user = token["userinfo"]
             session["user"] = user
+            create_user_if_does_not_exist(user["sub"], user["email"])
             return redirect(f"{frontend_url}/auth/success")
         except Exception as e:
             print(f"Error: {e}")
