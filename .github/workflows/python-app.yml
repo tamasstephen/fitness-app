@@ -1,0 +1,65 @@
+name: Python application
+
+on:
+  push:
+    branches: ["main", "feat/infrastructure"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: fitness_app
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f backend/requirements.txt ]; then pip install -r backend/requirements.txt; fi
+      - name: Lint with flake8
+        run: |
+          cd backend  # Run from backend directory
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 src --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings
+          flake8 src --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics
+      - name: Test with pytest
+        env:
+          SECRET_KEY: test-key
+          FLASK_ENV: testing
+          ALLOWED_DEVELOPMENT_ORIGIN: http://localhost:3000
+          CORS_ALLOWED_ORIGINS: http://localhost:3000
+          FRONTEND_URL: http://localhost:3000
+          AUTHORIZE_REDIRECT_URL: http://localhost:3000/auth
+          LOGOUT_URI: http://localhost:3000/logout
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: fitness_app
+          POSTGRES_HOST: localhost
+        run: |
+          cd backend
+          python src/scripts/db_schema.py  # Fix path to schema script
+          pytest

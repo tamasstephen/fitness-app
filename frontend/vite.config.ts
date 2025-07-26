@@ -24,4 +24,7 @@ export default defineConfig({
     tanstackStart({ customViteReactPlugin: true }),
     react(),
   ],
+  test: {
+    environment: "jsdom",
+  },
 });
