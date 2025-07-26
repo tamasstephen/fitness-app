@@ -35,13 +35,13 @@ def create_app():
 
     # Enable CORS for all origins, allowing your React app to access the API.
     CORS(app, origins=allowed_origins, supports_credentials=True)
-    csrf = CSRFProtect(app)
-    csrf.init_app(app)
+    CSRFProtect(app)
 
     authority = os.getenv("COGNITO_AUTHORITY")
     client_id = os.getenv("COGNITO_CLIENT_ID")
     client_secret = os.getenv("COGNITO_CLIENT_SECRET")
     server_metadata_url = os.getenv("COGNITO_SERVER_METADATA_URL")
+    environment = os.getenv("FLASK_ENV")
 
     oauth = OAuth(app)
     oauth.register(
@@ -85,9 +85,9 @@ def create_app():
         response.set_cookie(
             "XSRF-TOKEN",
             generate_csrf(),
-            secure=True,
+            secure=environment == "production",
             samesite="Lax",
-            httponly=True,
+            httponly=False,
             domain=None,
             max_age=60 * 60 * 24 * 30,
             path="/",
@@ -110,10 +110,6 @@ def create_app():
             }
         else:
             return {"status": "unauthenticated"}, 401
-
-    @app.route("/csrf-token")
-    def get_csrf_token():
-        return {"csrf_token": generate_csrf()}
 
     @app.route("/login")
     def login():
