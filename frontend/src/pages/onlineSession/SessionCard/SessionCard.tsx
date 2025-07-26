@@ -1,13 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import styles from "./SessionCard.module.scss";
-
-interface SessionCardProps {
-  id: string;
-  date_time: string;
-  duration: number;
-  title: string;
-  training_status: string;
-}
+import { TrainingSession } from "@/interfaces";
+import { format } from "date-fns";
 
 export const SessionCard = ({
   id,
@@ -15,13 +9,19 @@ export const SessionCard = ({
   duration,
   title,
   training_status,
-}: SessionCardProps) => {
+}: TrainingSession) => {
+  const formattedDate = format(new Date(date_time), "dd/MM/yyyy HH:mm");
   return (
     <Link to="/auth/training/$id" params={{ id }}>
       <div className={styles["session-card"]}>
         <div className={styles["session-card-content"]}>
           <h3 className={styles["session-card-title"]}>{title}</h3>
-          <p className={styles["session-card-date-time"]}>{date_time}</p>
+          <p
+            aria-label="Date and Time"
+            className={styles["session-card-date-time"]}
+          >
+            {formattedDate}
+          </p>
           <p className={styles["session-card-duration"]}>{duration}</p>
           <p className={styles["session-card-training-status"]}>
             {training_status}

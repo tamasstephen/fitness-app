@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
 import { SessionCard } from "./SessionCard";
 import styles from "./OnlineSession.module.scss";
-
-interface TrainingSession {
-  id: string;
-  date_time: string;
-  duration: number;
-  title: string;
-  training_status: string;
-}
+import { TrainingSession } from "@/interfaces";
 
 interface OnlineSessionProps {
   items?: TrainingSession[];

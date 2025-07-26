@@ -1,12 +1,13 @@
 from blueprints.video_server.video_server import video_bp, register_user_socket_events
 from blueprints.users.users import users_bp
 import os
-from flask import Flask, redirect, session
+from flask import Flask, redirect, session, request
 from flask_cors import CORS
 from dotenv import load_dotenv
 from flask_socketio import SocketIO
 from authlib.integrations.flask_client import OAuth
 from services import create_user_if_does_not_exist
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 socketio = SocketIO()
 
@@ -34,6 +35,8 @@ def create_app():
 
     # Enable CORS for all origins, allowing your React app to access the API.
     CORS(app, origins=allowed_origins, supports_credentials=True)
+    csrf = CSRFProtect(app)
+    csrf.init_app(app)
 
     authority = os.getenv("COGNITO_AUTHORITY")
     client_id = os.getenv("COGNITO_CLIENT_ID")
@@ -76,6 +79,21 @@ def create_app():
     def home():
         return "Welcome to the Flask Backend!"
 
+    @app.after_request
+    def add_csrf_token(response):
+        print("Adding CSRF token")
+        response.set_cookie(
+            "XSRF-TOKEN",
+            generate_csrf(),
+            secure=True,
+            samesite="Lax",
+            httponly=True,
+            domain=None,
+            max_age=60 * 60 * 24 * 30,
+            path="/",
+        )
+        return response
+
     @app.route("/status")
     def get_status():
         """
@@ -92,6 +110,10 @@ def create_app():
             }
         else:
             return {"status": "unauthenticated"}, 401
+
+    @app.route("/csrf-token")
+    def get_csrf_token():
+        return {"csrf_token": generate_csrf()}
 
     @app.route("/login")
     def login():
