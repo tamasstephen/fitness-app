@@ -1,6 +1,6 @@
 from flask import Blueprint
-from decorators.decorators import require_auth
-from data.training_sessions import get_training_sessions_by_user_id
+from ...decorators.decorators import require_auth
+from ...data.training_sessions import get_training_sessions_by_user_id
 
 users_bp = Blueprint("users", __name__, url_prefix="/users")
 

@@ -1,4 +1,4 @@
-from data.connection import with_connection
+from .connection import with_connection
 
 
 @with_connection

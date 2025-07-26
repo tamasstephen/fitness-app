@@ -1,8 +1,8 @@
-from data.users import (
+from ..data.users import (
     create_user as create_user_data,
     get_user_by_id as get_user_by_id_data,
 )
-from constants.constants import TRAINING_LEVELS
+from ..constants.constants import TRAINING_LEVELS
 
 
 def create_user(user_id, email, training_level):

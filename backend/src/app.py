@@ -1,12 +1,15 @@
-from blueprints.video_server.video_server import video_bp, register_user_socket_events
-from blueprints.users.users import users_bp
+from .blueprints.video_server.video_server import (
+    video_bp,
+    register_user_socket_events,
+)
+from .blueprints.users.users import users_bp
+from .services import create_user_if_does_not_exist
 import os
-from flask import Flask, redirect, session, request
+from flask import Flask, redirect, session
 from flask_cors import CORS
 from dotenv import load_dotenv
 from flask_socketio import SocketIO
 from authlib.integrations.flask_client import OAuth
-from services import create_user_if_does_not_exist
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 socketio = SocketIO()
