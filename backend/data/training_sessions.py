@@ -5,21 +5,20 @@ from data.connection import with_connection
 def create_training_session(
     cursor,
     date_time,
-    description,
     duration,
     title,
     trainer_id,
-    training_status,
+    status,
     user_id,
 ):
     query = """
-    INSERT INTO training_session (user_id, date_time, duration, description, title, training_status, trainer_id)
+    INSERT INTO training_session (user_id, date_time, duration,  title, status, trainer_id)
     VALUES (%s, %s, %s, %s, %s, %s, %s)
     RETURNING id
     """
     cursor.execute(
         query,
-        (user_id, date_time, duration, description, title, training_status, trainer_id),
+        (user_id, date_time, duration, title, status, trainer_id),
     )
     return cursor.fetchone()[0]
 
