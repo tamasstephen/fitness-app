@@ -1,10 +1,13 @@
 from blueprints.video_server.video_server import video_bp, register_user_socket_events
+from blueprints.users.users import users_bp
 import os
 from flask import Flask, redirect, session, request
 from flask_cors import CORS
 from dotenv import load_dotenv
 from flask_socketio import SocketIO
 from authlib.integrations.flask_client import OAuth
+from services import create_user_if_does_not_exist
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 socketio = SocketIO()
 
@@ -32,11 +35,13 @@ def create_app():
 
     # Enable CORS for all origins, allowing your React app to access the API.
     CORS(app, origins=allowed_origins, supports_credentials=True)
+    CSRFProtect(app)
 
     authority = os.getenv("COGNITO_AUTHORITY")
     client_id = os.getenv("COGNITO_CLIENT_ID")
     client_secret = os.getenv("COGNITO_CLIENT_SECRET")
     server_metadata_url = os.getenv("COGNITO_SERVER_METADATA_URL")
+    environment = os.getenv("FLASK_ENV")
 
     oauth = OAuth(app)
     oauth.register(
@@ -65,6 +70,7 @@ def create_app():
 
     socketio.init_app(app, cors_allowed_origins=allowed_origins)
     app.register_blueprint(video_bp)
+    app.register_blueprint(users_bp, url_prefix="/users")
 
     # Register socket events from the video blueprint
     register_user_socket_events(socketio)
@@ -73,10 +79,23 @@ def create_app():
     def home():
         return "Welcome to the Flask Backend!"
 
+    @app.after_request
+    def add_csrf_token(response):
+        print("Adding CSRF token")
+        response.set_cookie(
+            "XSRF-TOKEN",
+            generate_csrf(),
+            secure=environment == "production",
+            samesite="Lax",
+            httponly=False,
+            domain=None,
+            max_age=60 * 60 * 24 * 30,
+            path="/",
+        )
+        return response
+
     @app.route("/status")
     def get_status():
-        origin = request.headers.get("Origin")
-        print("origin", origin)
         """
         A simple API endpoint that returns the authentication status.
         """
@@ -84,7 +103,11 @@ def create_app():
         print("session_user", session_user)
 
         if session_user:
-            return {"status": "authenticated", "email": session_user["email"]}
+            return {
+                "status": "authenticated",
+                "email": session_user["email"],
+                "user_id": session_user["sub"],
+            }
         else:
             return {"status": "unauthenticated"}, 401
 
@@ -98,7 +121,7 @@ def create_app():
             token = oauth.oidc.authorize_access_token()
             user = token["userinfo"]
             session["user"] = user
-            print("user", user)
+            create_user_if_does_not_exist(user["sub"], user["email"])
             return redirect(f"{frontend_url}/auth/success")
         except Exception as e:
             print(f"Error: {e}")
@@ -122,8 +145,6 @@ def create_app():
 
         query_string = urllib.parse.urlencode(logout_params)
         full_logout_url = f"{cognito_logout_url}?{query_string}"
-
-        print("Redirecting to Cognito logout:", full_logout_url)
 
         # Redirect the browser to Cognito's logout endpoint
         return redirect(full_logout_url)

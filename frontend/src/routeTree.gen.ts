@@ -13,7 +13,9 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthAuthRouteImport } from './routes/auth/_auth'
+import { Route as AuthTrainingIdRouteImport } from './routes/auth/training/$id'
 import { Route as AuthAuthSuccessRouteImport } from './routes/auth/_auth.success'
+import { Route as AuthAuthOnlineSessionRouteImport } from './routes/auth/_auth.online-session'
 import { Route as AuthAuthDashboardRouteImport } from './routes/auth/_auth.dashboard'
 
 const AuthRouteImport = createFileRoute('/auth')()
@@ -32,9 +34,19 @@ const AuthAuthRoute = AuthAuthRouteImport.update({
   id: '/_auth',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthTrainingIdRoute = AuthTrainingIdRouteImport.update({
+  id: '/training/$id',
+  path: '/training/$id',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthAuthSuccessRoute = AuthAuthSuccessRouteImport.update({
   id: '/success',
   path: '/success',
+  getParentRoute: () => AuthAuthRoute,
+} as any)
+const AuthAuthOnlineSessionRoute = AuthAuthOnlineSessionRouteImport.update({
+  id: '/online-session',
+  path: '/online-session',
   getParentRoute: () => AuthAuthRoute,
 } as any)
 const AuthAuthDashboardRoute = AuthAuthDashboardRouteImport.update({
@@ -47,13 +59,17 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthAuthRouteWithChildren
   '/auth/dashboard': typeof AuthAuthDashboardRoute
+  '/auth/online-session': typeof AuthAuthOnlineSessionRoute
   '/auth/success': typeof AuthAuthSuccessRoute
+  '/auth/training/$id': typeof AuthTrainingIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthAuthRouteWithChildren
   '/auth/dashboard': typeof AuthAuthDashboardRoute
+  '/auth/online-session': typeof AuthAuthOnlineSessionRoute
   '/auth/success': typeof AuthAuthSuccessRoute
+  '/auth/training/$id': typeof AuthTrainingIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,20 +77,36 @@ export interface FileRoutesById {
   '/auth': typeof AuthRouteWithChildren
   '/auth/_auth': typeof AuthAuthRouteWithChildren
   '/auth/_auth/dashboard': typeof AuthAuthDashboardRoute
+  '/auth/_auth/online-session': typeof AuthAuthOnlineSessionRoute
   '/auth/_auth/success': typeof AuthAuthSuccessRoute
+  '/auth/training/$id': typeof AuthTrainingIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/auth/dashboard' | '/auth/success'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/auth/dashboard'
+    | '/auth/online-session'
+    | '/auth/success'
+    | '/auth/training/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/auth/dashboard' | '/auth/success'
+  to:
+    | '/'
+    | '/auth'
+    | '/auth/dashboard'
+    | '/auth/online-session'
+    | '/auth/success'
+    | '/auth/training/$id'
   id:
     | '__root__'
     | '/'
     | '/auth'
     | '/auth/_auth'
     | '/auth/_auth/dashboard'
+    | '/auth/_auth/online-session'
     | '/auth/_auth/success'
+    | '/auth/training/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -105,11 +137,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAuthRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/auth/training/$id': {
+      id: '/auth/training/$id'
+      path: '/training/$id'
+      fullPath: '/auth/training/$id'
+      preLoaderRoute: typeof AuthTrainingIdRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/auth/_auth/success': {
       id: '/auth/_auth/success'
       path: '/success'
       fullPath: '/auth/success'
       preLoaderRoute: typeof AuthAuthSuccessRouteImport
+      parentRoute: typeof AuthAuthRoute
+    }
+    '/auth/_auth/online-session': {
+      id: '/auth/_auth/online-session'
+      path: '/online-session'
+      fullPath: '/auth/online-session'
+      preLoaderRoute: typeof AuthAuthOnlineSessionRouteImport
       parentRoute: typeof AuthAuthRoute
     }
     '/auth/_auth/dashboard': {
@@ -124,11 +170,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthAuthRouteChildren {
   AuthAuthDashboardRoute: typeof AuthAuthDashboardRoute
+  AuthAuthOnlineSessionRoute: typeof AuthAuthOnlineSessionRoute
   AuthAuthSuccessRoute: typeof AuthAuthSuccessRoute
 }
 
 const AuthAuthRouteChildren: AuthAuthRouteChildren = {
   AuthAuthDashboardRoute: AuthAuthDashboardRoute,
+  AuthAuthOnlineSessionRoute: AuthAuthOnlineSessionRoute,
   AuthAuthSuccessRoute: AuthAuthSuccessRoute,
 }
 
@@ -138,10 +186,12 @@ const AuthAuthRouteWithChildren = AuthAuthRoute._addFileChildren(
 
 interface AuthRouteChildren {
   AuthAuthRoute: typeof AuthAuthRouteWithChildren
+  AuthTrainingIdRoute: typeof AuthTrainingIdRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthAuthRoute: AuthAuthRouteWithChildren,
+  AuthTrainingIdRoute: AuthTrainingIdRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)

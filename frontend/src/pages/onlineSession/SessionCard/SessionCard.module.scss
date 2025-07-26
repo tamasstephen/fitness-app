@@ -1,0 +1,40 @@
+.session-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+
+  .session-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .session-card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .session-card-date-time {
+    font-size: 1rem;
+    color: #666;
+  }
+
+  .session-card-duration {
+    font-size: 1rem;
+    color: #666;
+  }
+
+  .session-card-training-status {
+    font-size: 1rem;
+    color: #666;
+  }
+}

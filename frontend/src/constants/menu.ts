@@ -7,7 +7,7 @@ export const menu = [
   {
     label: "Online classes",
     icon: "online-classes",
-    path: "/online-classes",
+    path: "/auth/dashboard",
   },
   {
     label: "Workout plan",
