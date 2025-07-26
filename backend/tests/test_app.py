@@ -1,4 +1,3 @@
-import json
 from src.app import create_app
 import pytest
 
