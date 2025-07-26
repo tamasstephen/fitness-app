@@ -1,3 +1,4 @@
+import json
 from src.app import create_app
 import pytest
 
@@ -22,3 +23,9 @@ def client(app):
 @pytest.fixture()
 def runner(app):
     return app.test_cli_runner()
+
+
+def test_status_unauthenticated(client):
+    response = client.get("/status")
+    assert response.status_code == 401
+    assert response.json["status"] == "unauthenticated"

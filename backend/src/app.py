@@ -78,10 +78,6 @@ def create_app():
     # Register socket events from the video blueprint
     register_user_socket_events(socketio)
 
-    @app.route("/")
-    def home():
-        return "Welcome to the Flask Backend!"
-
     @app.after_request
     def add_csrf_token(response):
         print("Adding CSRF token")
