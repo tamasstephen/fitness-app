@@ -18,14 +18,14 @@ export function DefaultCatchBoundary({ error }: ErrorComponentProps) {
   console.error(error);
 
   return (
-    <div className="">
+    <div className={styles.container}>
       <ErrorComponent error={error} />
-      <div className="">
+      <div className={styles.actions}>
         <button
           onClick={() => {
             router.invalidate();
           }}
-          className={``}
+          className={styles.button}
         >
           Try Again
         </button>
