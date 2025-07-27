@@ -1,4 +1,3 @@
 {
-  "python.analysis.extraPaths": ["./backend/src"],
-  "cursorpyright.analysis.diagnosticSeverityOverrides": {}
+  "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python"
 }
