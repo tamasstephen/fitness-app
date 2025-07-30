@@ -17,9 +17,9 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: fitness_app
+          POSTGRES_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
+          POSTGRES_USER: ${{ secrets.TEST_DB_USER }}
+          POSTGRES_DB: fitness_app_test
         ports:
           - 5432:5432
         options: >-
@@ -48,16 +48,16 @@ jobs:
           flake8 src --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics
       - name: Test with pytest
         env:
-          SECRET_KEY: test-key
+          SECRET_KEY: ${{ secrets.TEST_SECRET_KEY }}
           FLASK_ENV: testing
           ALLOWED_DEVELOPMENT_ORIGIN: http://localhost:3000
           CORS_ALLOWED_ORIGINS: http://localhost:3000
           FRONTEND_URL: http://localhost:3000
           AUTHORIZE_REDIRECT_URL: http://localhost:3000/auth
           LOGOUT_URI: http://localhost:3000/logout
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: fitness_app
+          POSTGRES_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
+          POSTGRES_USER: ${{ secrets.TEST_DB_USER }}
+          POSTGRES_DB: fitness_app_test
           POSTGRES_HOST: localhost
         run: |
           cd backend
