@@ -1,9 +1,10 @@
-from .blueprints.video_server.video_server import (
+# Change these relative imports to absolute imports
+from src.blueprints.video_server.video_server import (
     video_bp,
     register_user_socket_events,
 )
-from .blueprints.users.users import users_bp
-from .services import create_user_if_does_not_exist
+from src.blueprints.users.users import users_bp
+from src.services import create_user_if_does_not_exist
 import os
 from flask import Flask, redirect, session
 from flask_cors import CORS
@@ -14,8 +15,6 @@ from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 socketio = SocketIO()
 
-
-# Load environment variables from a .env file (useful during local development)
 load_dotenv()
 
 allowed_origins = (
@@ -161,4 +160,10 @@ def create_app():
 
 if __name__ == "__main__":
     app = create_app()
-    socketio.run(app, debug=True, host="0.0.0.0", port=5001)
+    socketio.run(
+        app,
+        debug=True,
+        host="0.0.0.0",
+        port=5001,
+        allow_unsafe_werkzeug=True,
+    )

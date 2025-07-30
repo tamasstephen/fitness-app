@@ -27,3 +27,6 @@ backend/venv
 # Frontend
 frontend/node_modules
 frontend/dist
+
+/database
+/backend/database
